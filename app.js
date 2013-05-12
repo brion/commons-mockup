@@ -82,19 +82,23 @@ function addGalleryImage(title, imageinfo) {
 }
 
 function openImageDetail(title, imageinfo) {
-	var $img = $('<img>')
-			.attr('src', imageinfo.thumburl)
-			.addClass('background-image')
-			.click(function() {
-				// Return to gallery
-				$('.navpage.active').removeClass('active');
-				$('#gallery').addClass('active');
-			});
-	$('#detail').empty().append($img);
+	$('#detail-image')
+		.attr('src', imageinfo.thumburl)
+		.unbind('click')
+		.click(function() {
+			// Return to gallery
+			$('.navpage.active').removeClass('active');
+			$('#gallery').addClass('active');
+		});
 
 	$('.navpage.active').removeClass('active');
 	$('#detail').addClass('active');
-	
+
+	$('#detail-title').text(stripTitle(title));	
 	lookupImageDetails(title).done(function(data) {
 	});
+}
+
+function stripTitle(title) {
+	return title.replace(/^File:/, '').replace(/\.[a-z0-9]+$/i, '');
 }

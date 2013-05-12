@@ -2,6 +2,8 @@ body {
 	background: #888;
 	margin: 0;
 	padding: 0;
+	
+	font-family: "Helvetica", "Arial", sans-serif;
 }
 
 #body {
@@ -28,10 +30,20 @@ body {
 	display: block;
 }
 
-.background-image {
+#detail-image {
 	position: absolute;
 	margin-left: auto;
 	margin-right: auto;
 	height: 100%;
 	opacity: 0.5;
+	z-index: 1;
+}
+
+#detail-data {
+	position: absolute;
+	z-index: 2;
+}
+
+h1 {
+	font-size: 18px;
 }
