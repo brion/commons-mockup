@@ -94,11 +94,91 @@ function openImageDetail(title, imageinfo) {
 	$('.navpage.active').removeClass('active');
 	$('#detail').addClass('active');
 
-	$('#detail-title').text(stripTitle(title));	
-	lookupImageDetails(title).done(function(data) {
+	$('#detail-title').text(stripTitle(title));
+	
+	$('#detail-desc').empty();
+	lookupDescription(title).done(function(descHtml) {
+		$('#detail-desc').html(descHtml);
+	});
+	
+	$('#detail-catlist').empty();
+	lookupCategories(title).done(function(data) {
+		$.each(data.query.pages, function(i, page) {
+			$.each(page.categories, function(i, category) {
+				showCategory(category.title);
+			});
+			showCategory('Add category', true);
+		});
 	});
 }
 
 function stripTitle(title) {
 	return title.replace(/^File:/, '').replace(/\.[a-z0-9]+$/i, '');
+}
+
+function lookupCategories(title) {
+	return $.ajax({
+		url: 'https://commons.wikimedia.org/w/api.php',
+		data: {
+			format: 'json',
+			action: 'query',
+			prop: 'categories',
+			clshow: '!hidden',
+			titles: title
+		},
+		dataType: 'jsonp'
+	});
+}
+
+function showCategory(category, isAdd) {
+	var className = (isAdd ? 'category-add' : 'category-item');
+	var suffix = (isAdd ? '' : ' ×');
+	var prefix = (isAdd ? '+ ' : '');
+	var title = category.replace(/^Category:/, '');
+	var $span = $('<span>')
+		.addClass(className || 'category-item')
+		.text(prefix + title + suffix)
+		.appendTo('#detail-catlist');
+	$('#detail-catlist').append(' '); // whitespace hack
+}
+
+function lookupDescription(title) {
+	var deferred = $.Deferred();
+	$.ajax({
+		url: 'https://commons.wikimedia.org/w/api.php',
+		data: {
+			format: 'json',
+			action: 'query',
+			prop: 'revisions',
+			rvprop: 'content',
+			rvparse: 1,
+			rvlimit: 1,
+			rvgeneratexml: 1,
+			titles: title
+		},
+		dataType: 'jsonp'
+	}).done(function(data) {
+		//console.log(data);
+
+		var page, rev;
+		$.each(data.query.pages, function(i, item) {
+			page = item;
+		});
+		rev = page.revisions[0];
+		
+		var pageHtml = rev['*'],
+			pageXml = rev['parsetree'];
+		
+		//console.log(pageHtml);
+		//console.log(pageXml);
+		
+		var $page = $('<div>' + pageHtml + '</div>');
+		var $desc = $page.find('.description.en');
+		var descHtml = $desc.html();
+		
+		deferred.resolve(descHtml);
+	}).error(function(err) {
+		deferred.reject(err);
+	});
+	return deferred.promise();
 }

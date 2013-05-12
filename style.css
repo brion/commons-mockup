@@ -47,3 +47,30 @@ body {
 h1 {
 	font-size: 18px;
 }
+
+#detail-catlist {
+	font-size: 14px;
+	line-height: 2em;
+}
+.category-item {
+	white-space: nowrap;
+	color: black;
+	background: #eee;
+	border-radius: 8px;
+	padding: 4px 8px;
+}
+.category-add {
+	white-space: nowrap;
+	color: black;
+	background: #aaa;
+	border-radius: 8px;
+	padding: 4px 8px;
+}
+
+/* hack */
+.langlabel-en {
+	display: none;
+}
+.language.en {
+	display: none;
+}
