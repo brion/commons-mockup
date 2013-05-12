@@ -84,7 +84,7 @@ function addGalleryImage(title, imageinfo) {
 function openImageDetail(title, imageinfo) {
 	var $img = $('<img>')
 			.attr('src', imageinfo.thumburl)
-			.attr('width', '320')
+			.addClass('background-image')
 			.click(function() {
 				// Return to gallery
 				$('.navpage.active').removeClass('active');
