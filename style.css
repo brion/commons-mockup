@@ -74,3 +74,16 @@ h1 {
 .language.en {
 	display: none;
 }
+
+
+#detail-categories {
+	margin-top: 1em;
+}
+
+.detail-plain {
+	color: #ccc;
+}
+
+#detail-touse {
+	margin-top: 1em;
+}

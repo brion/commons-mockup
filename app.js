@@ -33,6 +33,14 @@ var uploads = [
     "File:Perth CBD from Mill Point.jpg"
 ];
 
+var remembered = 0;
+function saveScrollPosition() {
+	remembered = $('#body').scrollTop();
+}
+function restoreScrollPosition() {
+	$('#body').scrollTop(remembered);
+}
+
 function lookupImageInfo(images, width, height) {
 	return $.ajax({
 		url: 'http://commons.wikimedia.org/w/api.php',
@@ -89,8 +97,10 @@ function openImageDetail(title, imageinfo) {
 			// Return to gallery
 			$('.navpage.active').removeClass('active');
 			$('#gallery').addClass('active');
+			restoreScrollPosition();
 		});
 
+	saveScrollPosition();
 	$('.navpage.active').removeClass('active');
 	$('#detail').addClass('active');
 
