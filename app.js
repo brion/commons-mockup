@@ -2,7 +2,7 @@
 var uploads = [
     //"File:Clock Tower - Palace of Westminster, London - September 2006-2.jpg",
     //"File:F. Müllhaupt's Militarische & Verkehrs-Karte der Deutsch-Französischen Grenze...jpg",
-    "File:Étienne Carjat, Portrait of Charles Baudelaire, circa 1862.jpg",
+    //"File:Étienne Carjat, Portrait of Charles Baudelaire, circa 1862.jpg",
     "File:Pair of Merops apiaster feeding.jpg",
     "File:Spb 06-2012 English Embankment 01.jpg",
     "File:QeshmIsland NASA.jpg",
@@ -48,7 +48,7 @@ function lookupImageInfo(images, width, height) {
 			format: 'json',
 			action: 'query',
 			prop: 'imageinfo',
-			iiprop: 'url|size',
+			iiprop: 'url|size|timestamp',
 			iiurlwidth: width,
 			iiurlheight: height,
 			titles: images.join('|')
@@ -91,7 +91,8 @@ function addGalleryImage(title, imageinfo) {
 
 function openImageDetail(title, imageinfo) {
 	$('#detail-image')
-		.attr('src', imageinfo.thumburl)
+		.attr('src', imageinfo.thumburl);
+	$('#detail-data,#detail-image')
 		.unbind('click')
 		.click(function() {
 			// Return to gallery
@@ -120,6 +121,17 @@ function openImageDetail(title, imageinfo) {
 			showCategory('Add category', true);
 		});
 	});
+	
+	$('#detail-date-date').text(formatDate(imageinfo.timestamp));
+	
+	$('#detail-used-count').text('... articles');
+	lookupGlobalUsage(title).done(function(articles) {
+		$('#detail-used-count').text(articles.length + ' articles');
+	});
+}
+
+function formatDate(date) {
+	return date.replace(/^(\d+)-(\d+)-(\d+)(.*)$/, '$1-$2-$3');
 }
 
 function stripTitle(title) {
@@ -187,6 +199,29 @@ function lookupDescription(title) {
 		var descHtml = $desc.html();
 		
 		deferred.resolve(descHtml);
+	}).error(function(err) {
+		deferred.reject(err);
+	});
+	return deferred.promise();
+}
+
+function lookupGlobalUsage(title) {
+	var deferred = $.Deferred();
+	$.ajax({
+		url: 'https://commons.wikimedia.org/w/api.php',
+		data: {
+			format: 'json',
+			action: 'query',
+			prop: 'globalusage',
+			titles: title
+		},
+		dataType: 'jsonp'
+	}).done(function(data) {
+		var page;
+		$.each(data.query.pages, function(i, item) {
+			page = item;
+		});
+		deferred.resolve(page.globalusage);
 	}).error(function(err) {
 		deferred.reject(err);
 	});
