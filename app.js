@@ -43,7 +43,7 @@ function restoreScrollPosition() {
 
 function lookupImageInfo(images, width, height) {
 	return $.ajax({
-		url: 'http://commons.wikimedia.org/w/api.php',
+		url: 'https://commons.wikimedia.org/w/api.php',
 		data: {
 			format: 'json',
 			action: 'query',
