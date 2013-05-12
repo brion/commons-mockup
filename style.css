@@ -1,0 +1,28 @@
+body {
+	background: #888;
+	margin: 0;
+	padding: 0;
+}
+
+#body {
+	background: black;
+	color: white;
+	margin: 0;
+	padding: 0;
+}
+
+@media screen and (min-device-width: 400px) {
+	#body {
+		max-width: 340px; /* add 20 px for scrollbar? */
+		height: 480px;
+		overflow-y: scroll;
+		overflow-x: hidden;
+	}
+}
+
+.navpage {
+	display: none;
+}
+.navpage.active {
+	display: block;
+}
