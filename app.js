@@ -1,8 +1,10 @@
+$(function() {
+
 // May 2013's featured photos
 var uploads = [
-    //"File:Clock Tower - Palace of Westminster, London - September 2006-2.jpg",
-    //"File:F. Müllhaupt's Militarische & Verkehrs-Karte der Deutsch-Französischen Grenze...jpg",
-    //"File:Étienne Carjat, Portrait of Charles Baudelaire, circa 1862.jpg",
+    "File:Clock Tower - Palace of Westminster, London - September 2006-2.jpg",
+    "File:F. Müllhaupt's Militarische & Verkehrs-Karte der Deutsch-Französischen Grenze...jpg",
+    "File:Étienne Carjat, Portrait of Charles Baudelaire, circa 1862.jpg",
     "File:Pair of Merops apiaster feeding.jpg",
     "File:Spb 06-2012 English Embankment 01.jpg",
     "File:QeshmIsland NASA.jpg",
@@ -41,6 +43,13 @@ function restoreScrollPosition() {
 	$('#body').scrollTop(remembered);
 }
 
+$('#control-rotate').click(function() {
+	var $body = $('#body');
+	$body.toggleClass('portrait');
+	$body.toggleClass('landscape');
+	startOver();
+});
+
 function lookupImageInfo(images, width, height) {
 	return $.ajax({
 		url: 'https://commons.wikimedia.org/w/api.php',
@@ -57,36 +66,42 @@ function lookupImageInfo(images, width, height) {
 	});
 }
 
-lookupImageInfo(
-	uploads,
-	640,
-	640
-).done(function(data) {
-	var info = {};
-	$.each(data.query.pages, function(i, page) {
-		var imageinfo = page.imageinfo[0];
-		info[page.title] = imageinfo;
+function startOver() {
+	console.log('starting over');
+	lookupImageInfo(
+		uploads,
+		640,
+		640
+	).done(function(data) {
+		$('#gallery-view').empty();
+		var info = {};
+		$.each(data.query.pages, function(i, page) {
+			var imageinfo = page.imageinfo[0];
+			info[page.title] = imageinfo;
+		});
+		$.each(uploads, function(i, title) {
+			addGalleryImage(title, info[title]);
+		});
 	});
-	$.each(uploads, function(i, title) {
-		addGalleryImage(title, info[title]);
-	});
-});
+}
 
 function addGalleryImage(title, imageinfo) {
 	var width = imageinfo.thumbwidth,
 		height = imageinfo.thumbheight,
 		url = imageinfo.thumburl,
 		name = title;
-	var $div = $('<div>'),
-		$img = $('<img>')
+	var $img = $('<img>')
 			.attr('src', url)
-			.attr('width', '320')
-			.appendTo($div)
 			.click(function() {
 				openImageDetail(title, imageinfo);
 			})
+	if ($('#body').hasClass('portrait')) {
+		$img.attr('width', '320')
+	} else {
+		$img.attr('height', '320')
+	}
 		
-	$('#gallery-view').append($div);
+	$('#gallery-view').append($img);
 }
 
 function openImageDetail(title, imageinfo) {
@@ -227,3 +242,7 @@ function lookupGlobalUsage(title) {
 	});
 	return deferred.promise();
 }
+
+startOver();
+
+});

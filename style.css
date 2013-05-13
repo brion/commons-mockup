@@ -14,12 +14,25 @@ body {
 }
 
 @media screen and (min-device-width: 400px) {
-	#body {
+	#body.portrait {
 		max-width: 340px; /* add 20 px for scrollbar? */
 		height: 480px;
 		overflow-y: scroll;
 		overflow-x: hidden;
 		position: relative;
+	}
+	#body.landscape {
+		width: 480px;
+		max-height: 340px; /* add 20 px for scrollbar? */
+		overflow-x: scroll;
+		overflow-y: hidden;
+		position: relative;
+		white-space: nowrap;
+	}
+}
+@media screen and (max-device-width: 399px) {
+	#controls {
+		display: none;
 	}
 }
 
