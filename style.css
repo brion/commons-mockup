@@ -13,17 +13,17 @@ body {
 	padding: 0;
 }
 
-@media screen and (min-device-width: 400px) {
+@media screen and (min-device-width: 769px) {
 	#body.portrait {
-		max-width: 340px; /* add 20 px for scrollbar? */
-		height: 480px;
+		max-width: 768px;
+		height: 1024px;
 		overflow-y: scroll;
 		overflow-x: hidden;
 		position: relative;
 	}
 	#body.landscape {
-		width: 480px;
-		height: 340px; /* add 20 px for scrollbar? */
+		width: 1024px;
+		height: 768px; /* add 20 px for scrollbar? */
 		overflow-x: scroll;
 		overflow-y: hidden;
 		position: relative;
@@ -33,7 +33,7 @@ body {
 		width: 480px;
 	}
 }
-@media screen and (max-device-width: 399px) {
+@media screen and (max-device-width: 768px) {
 	#controls {
 		display: none;
 	}
