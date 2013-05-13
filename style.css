@@ -23,11 +23,14 @@ body {
 	}
 	#body.landscape {
 		width: 480px;
-		max-height: 340px; /* add 20 px for scrollbar? */
+		height: 340px; /* add 20 px for scrollbar? */
 		overflow-x: scroll;
 		overflow-y: hidden;
 		position: relative;
 		white-space: nowrap;
+	}
+	#body.landscape #detail {
+		width: 480px;
 	}
 }
 @media screen and (max-device-width: 399px) {
@@ -41,6 +44,14 @@ body {
 }
 .navpage.active {
 	display: block;
+}
+
+#detail {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	top: 0;
 }
 
 #detail-image {
