@@ -96,9 +96,9 @@ function addGalleryImage(title, imageinfo) {
 				openImageDetail(title, imageinfo);
 			})
 	if ($('#body').hasClass('portrait')) {
-		$img.attr('width', '768')
+		$img.attr('width', '256')
 	} else {
-		$img.attr('height', '768')
+		$img.attr('height', '256')
 	}
 		
 	$('#gallery-view').append($img);

@@ -17,17 +17,22 @@ body {
 	#body.portrait {
 		max-width: 768px;
 		height: 1024px;
-		overflow-y: scroll;
-		overflow-x: hidden;
+		overflow-x: scroll;
+		overflow-y: hidden;
 		position: relative;
+		-moz-column-width: 256px;
+		-webkit-column-width: 256px;
+		column-width: 256px;
+		-moz-column-gap: 0px;
+		-webkit-column-gap: 0px;
+		column-gap: 0px;
 	}
 	#body.landscape {
 		width: 1024px;
 		height: 768px; /* add 20 px for scrollbar? */
-		overflow-x: scroll;
-		overflow-y: hidden;
+		overflow-y: scroll;
+		overflow-x: hidden;
 		position: relative;
-		white-space: nowrap;
 	}
 	#body.landscape #detail {
 		width: 480px;
