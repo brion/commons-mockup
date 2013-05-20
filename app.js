@@ -125,10 +125,15 @@ function positionGalleryImages() {
 			width = $item.width(),
 			height = $item.height();
 		
-		var thisColumnHeight = columnHeight[activeColumn],
+		var lastColumnHeight = columnHeight[(activeColumn - 1) % nColumns],
+			thisColumnHeight = columnHeight[activeColumn],
 			nextColumnHeight = columnHeight[(activeColumn + 1) % nColumns];
-			
-		if ((thisColumnHeight + height) > (nextColumnHeight + height)) {
+		
+		if (activeColumn == 0) {
+			lastColumnHeight = 0;
+		}
+		if (thisColumnHeight > 0 &&
+			(thisColumnHeight + height) > (lastColumnHeight)) {
 			activeColumn++;
 			if (activeColumn >= nColumns) {
 				activeColumn = 0;
@@ -139,12 +144,6 @@ function positionGalleryImages() {
 			y = columnHeight[activeColumn];
 		columnHeight[activeColumn] += height;
 
-		/*		
-		activeColumn++;
-		if (activeColumn >= nColumns) {
-			activeColumn = 0;
-		}
-		*/
 		$item
 			.css('position', 'absolute')
 			.css('left', x + 'px')
