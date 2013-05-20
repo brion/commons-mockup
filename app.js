@@ -174,9 +174,21 @@ function startOver() {
 	ping(uploads)
 	.done(function() {;
 		ping(uploads2).done(function() {
-			positionGalleryImages();
+			downloadCount = uploads.length + uploads2.length;
+			onDownloadFinished = function() {
+				positionGalleryImages();
+			}
 		});
 	});
+}
+
+var onDownloadFinished = null;
+var downloadCount = 9999;
+function pingDownloads() {
+	downloadCount--;
+	if (downloadCount == 0 && onDownloadFinished) {
+		onDownloadFinished();
+	}
 }
 
 function addGalleryImage(title, imageinfo) {
@@ -189,11 +201,24 @@ function addGalleryImage(title, imageinfo) {
 			.click(function() {
 				openImageDetail(title, imageinfo);
 			})
-	if ($('#body').hasClass('portrait')) {
-		$img.attr('width', columnSize())
-	} else {
-		$img.attr('height', columnSize())
-	}
+			.load(function() {
+				if ($('#body').hasClass('portrait')) {
+					$img.attr('width', columnSize())
+					var screenHeight = $('#body').height();
+					console.log('$img.height(): ' + $img.height());
+					console.log('screenHeight: ' + screenHeight);
+					if ($img.height() > screenHeight) {
+						$img.attr('width', 'auto').attr('height', screenHeight);
+					}
+				} else {
+					$img.attr('height', columnSize())
+					var screenHeight = $('#body').width();
+					if ($img.width() > screenHeight) {
+						$img.attr('height', 'auto').attr('width', screenHeight);
+					}
+				}
+				pingDownloads();
+			});
 	
 	$('#gallery-view').append($img);
 }
@@ -249,6 +274,7 @@ function positionGalleryImages() {
 			width = height;
 			height = swap;
 		}
+		width = columnSize();
 		
 		var lastColumnHeight = columnHeight[(activeColumn - 1) % nColumns],
 			thisColumnHeight = columnHeight[activeColumn],
