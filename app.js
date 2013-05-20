@@ -32,7 +32,41 @@ var uploads = [
     "File:28-090504-black-headed-bunting-at-first-layby.jpg",
     "File:Grot pavilion in Tsarskoe Selo.jpg",
     "File:Pachygrapsus marmoratus 2009 G4.jpg",
-    "File:Perth CBD from Mill Point.jpg"
+    "File:Perth CBD from Mill Point.jpg",
+];
+
+var uploads2 = [
+    // April 2013
+    "File:Tartu Toomkiriku varemed 2012.jpg",
+    "File:Måbødalen, 2011 August.jpg",
+    "File:Power 8 mandelbulb fractal overview.jpg",
+    "File:SNCF TGV PSE Viaduc de Cize - Bolozon.jpg",
+    "File:My Tho, Vietnam. A Viet Cong base camp being. In the foreground is Private First Class Raymond Rumpa, St Paul, Minnesota - NARA - 530621 edit.jpg",
+    "File:Macroglossum stellatarum01(js).jpg",
+    "File:Ruhrtalbruecke-Sonnenuntergang.jpg",
+    "File:Mount St Helens Summit Pano II.jpg",
+    "File:2012-wildebeest-fight.jpg",
+    "File:Liceum building in Tsarskoe Selo 02.jpg",
+    "File:Line integral of scalar field.gif",
+    "File:Boletus erythropus 2010 G1.jpg",
+    "File:Luxor Souq R01.jpg",
+    "File:Catopsilia pomona 3 by kadavoor.jpg",
+    "File:Eilean Donan Castle Panorama.jpg",
+    "File:Catopsilia pyranthe male, Burdwan, West Bengal, India 14 09 2012.jpg",
+    "File:Kose kirik suvi 2012.jpg",
+    "File:Sunrise apollo side.jpg",
+    "File:Stroop Report - Warsaw Ghetto Uprising 06b.jpg",
+    "File:Reflet-tour-Eiffel-Paris-Luc-Viatour.jpg",
+    "File:Chamaeleo namaquensis (Namib-Naukluft, 2011).jpg",
+    "File:Köcherbaumwald-01.jpg",
+    "File:Namib-Naukluft Sand Dunes (2011).jpg",
+    "File:Estudiantes vs Unicaja Málaga - Carl English y Zoran Dragić.jpg",
+    "File:Champ de Mars from the Eiffel Tower - July 2006 edit.jpg",
+    "File:SLS AMG Roadster.jpg",
+    "File:Väimela Alajärv 2012 08.jpg",
+    "File:Synhalonia on Phlomis 5.jpg",
+    "File:Arlington Row Bibury.jpg",
+    "File:Brussels Cinquantenaire R03.jpg"
 ];
 
 var remembered = 0;
@@ -78,21 +112,33 @@ function lookupImageInfo(images, width, height) {
 
 function startOver() {
 	console.log('starting over');
-	lookupImageInfo(
-		uploads,
-		640,
-		640
-	).done(function(data) {
-		$('#gallery-view').empty();
-		var info = {};
-		$.each(data.query.pages, function(i, page) {
-			var imageinfo = page.imageinfo[0];
-			info[page.title] = imageinfo;
+	$('#gallery-view').empty();
+	function ping(images) {
+		var deferred = $.Deferred();
+		lookupImageInfo(
+			images,
+			640,
+			640
+		).done(function(data) {
+			var info = {};
+			$.each(data.query.pages, function(i, page) {
+				var imageinfo = page.imageinfo[0];
+				info[page.title] = imageinfo;
+			});
+			$.each(images, function(i, title) {
+				addGalleryImage(title, info[title]);
+			});
+			deferred.resolve(data);
+		}).fail(function(err) {
+			deferred.reject(err);
 		});
-		$.each(uploads, function(i, title) {
-			addGalleryImage(title, info[title]);
+		return deferred.promise();
+	}
+	ping(uploads)
+	.done(function() {;
+		ping(uploads2).done(function() {
+			positionGalleryImages();
 		});
-		positionGalleryImages();
 	});
 }
 
