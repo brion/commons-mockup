@@ -96,11 +96,11 @@ function addGalleryImage(title, imageinfo) {
 			.click(function() {
 				openImageDetail(title, imageinfo);
 			})
-	//if ($('#body').hasClass('portrait')) {
+	if ($('#body').hasClass('portrait')) {
 		$img.attr('width', '256')
-	//} else {
-	//	$img.attr('height', '256')
-	//}
+	} else {
+		$img.attr('height', '256')
+	}
 	
 	$('#gallery-view').append($img);
 }
@@ -108,22 +108,26 @@ function addGalleryImage(title, imageinfo) {
 function positionGalleryImages() {
 	var $images = $('#gallery-view img');
 	var n = $images.size();
-	var nColumns;
-	if ($('#body').hasClass('portrait')) {
-		nColumns = 3;
-	} else {
-		nColumns = 4;
-	}
+	var nColumns = 3;
 	var columnHeight = [];
 	for (var i = 0; i < nColumns; i++) {
 		columnHeight[i] = 0;
 	}
 	var activeColumn = 0;
 	var index = 0;
+	var landscape = !$('#body').hasClass('portrait');
+	
+	$('#body .counter').remove();
+	
 	$images.each(function(i, item) {
 		var $item = $(item),
 			width = $item.width(),
 			height = $item.height();
+		if (landscape) {
+			var swap = width;
+			width = height;
+			height = swap;
+		}
 		
 		var lastColumnHeight = columnHeight[(activeColumn - 1) % nColumns],
 			thisColumnHeight = columnHeight[activeColumn],
@@ -144,6 +148,11 @@ function positionGalleryImages() {
 			y = columnHeight[activeColumn];
 		columnHeight[activeColumn] += height;
 
+		if (landscape) {
+			var swap = y;
+			y = x;
+			x = swap;
+		}
 		$item
 			.css('position', 'absolute')
 			.css('left', x + 'px')
@@ -155,6 +164,7 @@ function positionGalleryImages() {
 			.css('left', x + 'px')
 			.css('top', y + 'px')
 			.css('color', '#00ff00')
+			.addClass('counter')
 			.appendTo('#body');			
 
 		index++;
