@@ -37,10 +37,20 @@ var uploads = [
 
 var remembered = 0;
 function saveScrollPosition() {
-	remembered = $('#body').scrollTop();
+	if ($('#body').hasClass('portrait')) {
+		remembered = $('#body').scrollTop();
+		$('#body').scrollTop(0);
+	} else {
+		remembered = $('#body').scrollLeft();
+		$('#body').scrollLeft(0);
+	}
 }
 function restoreScrollPosition() {
-	$('#body').scrollTop(remembered);
+	if ($('#body').hasClass('portrait')) {
+		$('#body').scrollTop(remembered);
+	} else {
+		$('#body').scrollLeft(remembered);
+	}
 }
 
 $('#control-rotate').click(function() {
@@ -106,6 +116,8 @@ function addGalleryImage(title, imageinfo) {
 }
 
 function positionGalleryImages() {
+	$('#gallery-view .counter').remove();
+	
 	var $images = $('#gallery-view img');
 	var n = $images.size();
 	var nColumns = 3;
@@ -116,8 +128,6 @@ function positionGalleryImages() {
 	var activeColumn = 0;
 	var index = 0;
 	var landscape = !$('#body').hasClass('portrait');
-	
-	$('#body .counter').remove();
 	
 	$images.each(function(i, item) {
 		var $item = $(item),
@@ -165,7 +175,7 @@ function positionGalleryImages() {
 			.css('top', y + 'px')
 			.css('color', '#00ff00')
 			.addClass('counter')
-			.appendTo('#body');			
+			.appendTo('#gallery-view');			
 
 		index++;
 	});
