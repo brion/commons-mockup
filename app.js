@@ -69,6 +69,30 @@ var uploads2 = [
     "File:Brussels Cinquantenaire R03.jpg"
 ];
 
+var uploads3 = [
+	// june 2013 provisional
+	"File:Big Sur McWay Falls May 2011.jpg",
+	"File:Deutsch-französische Grenzländer, mit genauer Einzeichnung der französischen Befestigungs-Anlagen.jpg",
+	"File:Anthochaera chrysoptera.jpg",
+	"File:Ayuntamiento, vistas panorámicas desde Toompea, Tallin, Estonia, 2012-08-05, DD 21.JPG",
+	"File:Snug Falls 2.jpg",
+	"File:Bridgewater Causeway.jpg",
+	"File:Water Dolphin.jpg",
+	"File:Thyssen-Krupp-Quartier-Essen-2013.jpg",
+	"File:Common Pierrot Castalius rosimon by kadavoor.JPG",
+	"File:Eye orbit anatomy anterior2.jpg",
+	"File:Arussaare õigeusu kirik.jpg",
+	"File:Dietes bicolor flower.jpg",
+	"File:Vincent van Gogh - Sorrow.jpg",
+	"File:Prasat Sikhoraphum - Sikhoraphum edit1.jpg",
+	"File:Johannes Vermeer (1632-1675) - The Girl With The Pearl Earring (1665).jpg",
+	"File:Diplacodes trivialis, West Bengal, India 13 09 2012.jpg",
+	"File:Bernache.jpg",
+	"File:Colors of Altiplano Boliviano 4340m Bolivia Luca Galuzzi 2006.jpg",
+	"File:Bruegge View from Rozenhoedkaai.jpg",
+	"File:Loopealne Keilas 18-06-2012.jpg"
+];
+
 var remembered = 0;
 function saveScrollPosition() {
 	if ($('#body').hasClass('portrait')) {
@@ -172,12 +196,12 @@ function startOver() {
 		return deferred.promise();
 	}
 	downloadCount = uploads.length + uploads2.length;
-	ping(uploads)
-	.done(function() {;
-		ping(uploads2).done(function() {
-			onDownloadFinished = function() {
-				positionGalleryImages();
-			}
+	onDownloadFinished = function() {
+		positionGalleryImages();
+	};
+	ping(uploads3).done(function() {
+		ping(uploads).done(function() {
+			ping(uploads2).done(function() {});
 		});
 	});
 }
