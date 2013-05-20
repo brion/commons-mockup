@@ -82,6 +82,7 @@ function startOver() {
 		$.each(uploads, function(i, title) {
 			addGalleryImage(title, info[title]);
 		});
+		positionGalleryImages();
 	});
 }
 
@@ -95,13 +96,70 @@ function addGalleryImage(title, imageinfo) {
 			.click(function() {
 				openImageDetail(title, imageinfo);
 			})
-	if ($('#body').hasClass('portrait')) {
-		$img.attr('width', '768')
-	} else {
-		$img.attr('height', '768')
-	}
-		
+	//if ($('#body').hasClass('portrait')) {
+		$img.attr('width', '256')
+	//} else {
+	//	$img.attr('height', '256')
+	//}
+	
 	$('#gallery-view').append($img);
+}
+
+function positionGalleryImages() {
+	var $images = $('#gallery-view img');
+	var n = $images.size();
+	var nColumns;
+	if ($('#body').hasClass('portrait')) {
+		nColumns = 3;
+	} else {
+		nColumns = 4;
+	}
+	var columnHeight = [];
+	for (var i = 0; i < nColumns; i++) {
+		columnHeight[i] = 0;
+	}
+	var activeColumn = 0;
+	var index = 0;
+	$images.each(function(i, item) {
+		var $item = $(item),
+			width = $item.width(),
+			height = $item.height();
+		
+		var thisColumnHeight = columnHeight[activeColumn],
+			nextColumnHeight = columnHeight[(activeColumn + 1) % nColumns];
+			
+		if ((thisColumnHeight + height) > (nextColumnHeight + height)) {
+			activeColumn++;
+			if (activeColumn >= nColumns) {
+				activeColumn = 0;
+			}
+		}
+		
+		var x = activeColumn * width,
+			y = columnHeight[activeColumn];
+		columnHeight[activeColumn] += height;
+
+		/*		
+		activeColumn++;
+		if (activeColumn >= nColumns) {
+			activeColumn = 0;
+		}
+		*/
+		$item
+			.css('position', 'absolute')
+			.css('left', x + 'px')
+			.css('top', y + 'px');
+		
+		var $number = $('<span>')
+			.text(index + '')
+			.css('position', 'absolute')
+			.css('left', x + 'px')
+			.css('top', y + 'px')
+			.css('color', '#00ff00')
+			.appendTo('#body');			
+
+		index++;
+	});
 }
 
 function openImageDetail(title, imageinfo) {
