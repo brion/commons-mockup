@@ -171,10 +171,10 @@ function startOver() {
 		});
 		return deferred.promise();
 	}
+	downloadCount = uploads.length + uploads2.length;
 	ping(uploads)
 	.done(function() {;
 		ping(uploads2).done(function() {
-			downloadCount = uploads.length + uploads2.length;
 			onDownloadFinished = function() {
 				positionGalleryImages();
 			}
@@ -203,15 +203,11 @@ function addGalleryImage(title, imageinfo) {
 			})
 			.load(function() {
 				if ($('#body').hasClass('portrait')) {
-					$img.attr('width', columnSize())
 					var screenHeight = $('#body').height();
-					console.log('$img.height(): ' + $img.height());
-					console.log('screenHeight: ' + screenHeight);
 					if ($img.height() > screenHeight) {
 						$img.attr('width', 'auto').attr('height', screenHeight);
 					}
 				} else {
-					$img.attr('height', columnSize())
 					var screenHeight = $('#body').width();
 					if ($img.width() > screenHeight) {
 						$img.attr('height', 'auto').attr('width', screenHeight);
@@ -219,6 +215,11 @@ function addGalleryImage(title, imageinfo) {
 				}
 				pingDownloads();
 			});
+	if (isPortrait()) {
+		$img.attr('width', columnSize());
+	} else {
+		$img.attr('height', columnSize());
+	}
 	
 	$('#gallery-view').append($img);
 }
@@ -274,7 +275,6 @@ function positionGalleryImages() {
 			width = height;
 			height = swap;
 		}
-		width = columnSize();
 		
 		var lastColumnHeight = columnHeight[(activeColumn - 1) % nColumns],
 			thisColumnHeight = columnHeight[activeColumn],
@@ -291,7 +291,7 @@ function positionGalleryImages() {
 			}
 		}
 		
-		var x = activeColumn * width,
+		var x = activeColumn * columnSize() + (columnSize() - width) / 2,
 			y = columnHeight[activeColumn];
 		columnHeight[activeColumn] += height;
 
