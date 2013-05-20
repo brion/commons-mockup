@@ -91,8 +91,45 @@ $('#control-rotate').click(function() {
 	var $body = $('#body');
 	$body.toggleClass('portrait');
 	$body.toggleClass('landscape');
+	
+	var swap = $body.css('width');
+	$body.css('width', $body.css('height'));
+	$body.css('height', swap);
+
 	startOver();
 });
+
+var deviceSizes = {
+	'iPhone-4': [320, 480],
+	'iPhone-5': [320, 568],
+	'iPad': [768, 1024],
+	'Nexus-S': [320, 534],
+	'Nexus-4': [384, 640],
+	'Nexus-7': [600, 960],
+	'Nexus-10': [800, 1280]
+};
+$('#control-device').change(function() {
+	var device = $(this).val();
+	setDevice(device);
+});
+
+function setDevice(device) {
+	var size = deviceSizes[device],
+		$body = $('#body'),
+		width,
+		height;
+	if (isPortrait()) {
+		width = size[0];
+		height = size[1];
+	} else {
+		width = size[1];
+		height = size[0];
+	}
+	$body
+		.css('width', width + 'px')
+		.css('height', height + 'px');
+	startOver();
+}
 
 function lookupImageInfo(images, width, height) {
 	return $.ajax({
@@ -153,20 +190,48 @@ function addGalleryImage(title, imageinfo) {
 				openImageDetail(title, imageinfo);
 			})
 	if ($('#body').hasClass('portrait')) {
-		$img.attr('width', '256')
+		$img.attr('width', columnSize())
 	} else {
-		$img.attr('height', '256')
+		$img.attr('height', columnSize())
 	}
 	
 	$('#gallery-view').append($img);
 }
+
+function isPortrait() {
+	return ($('#body').hasClass('portrait'));
+}
+
+function deviceWidth() {
+	if (isPortrait()) {
+		return $('#body').width();
+	} else {
+		return $('#body').height();
+	}
+}
+
+function columnCount() {
+	var width = deviceWidth();
+	if (width > 600) {
+		return 3;
+	} else if (width > 400) {
+		return 2;
+	} else {
+		return 1;
+	}
+}
+
+function columnSize() {
+	return Math.floor(deviceWidth() / columnCount());
+}
+
 
 function positionGalleryImages() {
 	$('#gallery-view .counter').remove();
 	
 	var $images = $('#gallery-view img');
 	var n = $images.size();
-	var nColumns = 3;
+	var nColumns = columnCount();
 	var columnHeight = [];
 	for (var i = 0; i < nColumns; i++) {
 		columnHeight[i] = 0;
@@ -366,6 +431,7 @@ function lookupGlobalUsage(title) {
 	return deferred.promise();
 }
 
-startOver();
+//startOver();
+setDevice($('#control-device').val());
 
 });
